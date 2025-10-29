@@ -1,1 +1,173 @@
-<meta http-equiv="refresh" content="0; url=Portfolio_Bartosz_Cieplik.pdf">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bartosz Cieplik – Portfolio & CV</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #79ab62;
+      --blue: #629eab;
+      --light: #eaeaea;
+      --dark: #222;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+      margin: 0;
+      background: var(--light);
+      color: var(--dark);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+      color: var(--dark);
+    }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      font-weight: 600;
+      color: var(--blue);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: color 0.2s, border-bottom 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+
+    nav button:hover,
+    nav button.active {
+      color: var(--green);
+      border-bottom: 2px solid var(--green);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem;
+      background: var(--light);
+    }
+
+    embed {
+      width: 100%;
+      height: 85vh;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact {
+      display: none;
+      text-align: center;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin-top: 2rem;
+    }
+
+    .contact a {
+      display: block;
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 500;
+      margin: 0.4rem 0;
+      transition: color 0.2s;
+    }
+
+    .contact a:hover {
+      color: var(--green);
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    @media (max-width: 768px) {
+      embed {
+        height: 70vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Bartosz Cieplik</h1>
+    <nav>
+      <button class="tab-btn active" data-target="cv">CV</button>
+      <button class="tab-btn" data-target="portfolio">Portfolio</button>
+      <button class="tab-btn" data-target="contact">Contact</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- CV shown by default -->
+    <embed id="cv" src="CV_Bartosz_Cieplik.pdf" type="application/pdf">
+    <embed id="portfolio" src="Portfolio_Bartosz_Cieplik.pdf" type="application/pdf" style="display:none;">
+    <div id="contact" class="contact">
+      <h2>Contact</h2>
+      <p>Feel free to reach out:</p>
+      <a href="YOUR_LINKEDIN_URL" target="_blank">LinkedIn</a>
+      <a href="mailto:YOUR_EMAIL">Email: YOUR_EMAIL</a>
+      <a href="tel:YOUR_PHONE">Phone: YOUR_PHONE</a>
+      <p>Address: YOUR_ADDRESS</p>
+    </div>
+  </main>
+
+  <footer>
+    © 2025 Bartosz Cieplik – Portfolio & CV
+  </footer>
+
+  <script>
+    const buttons = document.querySelectorAll(".tab-btn");
+    const cv = document.getElementById("cv");
+    const portfolio = document.getElementById("portfolio");
+    const contact = document.getElementById("contact");
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        cv.style.display = "none";
+        portfolio.style.display = "none";
+        contact.style.display = "none";
+
+        const target = btn.dataset.target;
+        document.getElementById(target).style.display = target === "contact" ? "block" : "block";
+      });
+    });
+  </script>
+</body>
+</html>
