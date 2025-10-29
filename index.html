@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bartosz Cieplik — CV & Portfolio</title>
 
-  <!-- If you have Bricolage Grotesque available from a provider, replace this URL.
-       A fallback stack is included. -->
+  <!-- font fallback: if you have Bricolage installed, replace family -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -17,13 +16,13 @@
       --bg:#fbfcfb;
       --text:#222;
       --muted:#666;
-      --transition: 620ms cubic-bezier(.22,.98,.38,.98); /* smooth, iOS-ish */
-      --max-portfolio-imgs: 100;
+      --card-bg: #fff;
+      --transition: 620ms cubic-bezier(.22,.98,.38,.98); /* smooth iOS-like */
+      --dot: "•";
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family: "Bricolage Grotesque", Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale}
-    /* Top ribbon */
-    header{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:white;border-bottom:1px solid rgba(0,0,0,0.04);position:sticky;top:0;z-index:30}
+    html,body{height:100%;margin:0;font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased}
+    header{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card-bg);border-bottom:1px solid rgba(0,0,0,0.04);position:sticky;top:0;z-index:30}
     .brand{font-weight:700;font-size:1.25rem;color:var(--text)}
     .tabs{display:flex;gap:12px}
     .tab{
@@ -32,96 +31,69 @@
     }
     .tab:hover{transform:translateY(-2px)}
     .tab.active{color:var(--green); background:rgba(121,171,98,0.06); border-color: rgba(98,158,171,0.06)}
-    /* Outer viewport for slider */
-    .viewport{position:relative;overflow:hidden;height:calc(100vh - 68px);} /* header height considered */
+    .viewport{position:relative;overflow:hidden;height:calc(100vh - 68px);}
     .slider{display:flex;height:100%;transition: transform var(--transition);will-change:transform}
-    /* left split (CV + contact) */
-    .pane{
-      min-width:100%;
-      height:100%;
-      display:flex;
-      align-items:stretch;
-      justify-content:flex-start;
-      background:var(--bg);
-    }
-    .split{
-      display:flex;
-      width:100%;
-      height:100%;
-      gap:20px;
-      align-items:stretch;
-      padding:26px;
-    }
-    /* CV area on the left - 65% */
-    .cv-column{
-      width:65%;
-      min-width:320px;
-      max-width:1200px;
-      background:white;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.06);display:flex;flex-direction:column;
-    }
-    .cv-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.04)}
-    .cv-title{font-weight:700;color:var(--text)}
-    .cv-actions{display:flex;gap:10px}
-    .btn{padding:8px 12px;border-radius:8px;background:var(--blue);color:white;text-decoration:none;font-weight:700;border:none;cursor:pointer}
-    .btn.ghost{background:transparent;color:var(--blue);border:1px solid rgba(98,158,171,0.08)}
-    /* The CV viewer - make it feel integrated, not like a raw browser chrome */
-    .cv-view{
-      flex:1;
-      height:calc(100% - 56px);
-      background:linear-gradient(180deg,#fff,#fbfcfc);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:8px;
-    }
-    /* embed container - gives subtle "card" look */
-    .pdf-frame{
-      width:100%;
-      height:100%;
-      border-radius:8px;
-      overflow:hidden;
-      box-shadow:inset 0 0 0 1px rgba(0,0,0,0.02);
-      background: #fff;
-    }
-    .pdf-frame embed{width:100%;height:100%;border:0;display:block}
+    .pane{min-width:100%;height:100%;display:flex;align-items:stretch;justify-content:flex-start;background:var(--bg)}
+    .split{display:flex;width:100%;height:100%;gap:20px;align-items:stretch;padding:26px}
+    .left-col{width:65%;min-width:320px;max-width:1200px;display:flex;flex-direction:column;gap:16px}
+    .right-col{width:35%;min-width:220px;max-width:520px;display:flex;flex-direction:column;gap:16px}
 
-    /* contact column on the right - 35% */
-    .contact-column{
-      width:35%;
-      min-width:220px;
-      max-width:520px;
-      display:flex;flex-direction:column;gap:12px;
-      align-items:stretch;
-    }
-    .contact-card{
-      width:100%;
-      background:white;border-radius:12px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,0.04);
-    }
-    .contact-card h3{margin:0 0 8px 0;color:var(--text)}
-    .contact-item{display:flex;flex-direction:column;padding:8px 0;border-top:1px dashed rgba(0,0,0,0.03)}
-    .contact-item:first-of-type{border-top:0;padding-top:0}
-    .contact-item a{color:var(--blue);text-decoration:none;font-weight:600}
+    /* Card / tile styles */
+    .card{background:var(--card-bg);border-radius:12px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,0.04)}
+    .card h2{margin:0 0 8px 0;font-size:1.05rem;color:var(--text);font-weight:700}
     .muted{color:var(--muted);font-size:0.95rem}
 
-    /* Portfolio pane (full-width) */
+    /* specific content styling to imitate PDF */
+    .contact-list a{color:var(--blue);text-decoration:none;font-weight:600}
+    .skill-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+    .skill-pill{background:rgba(98,158,171,0.06);padding:6px 10px;border-radius:999px;font-weight:600;color:var(--blue);font-size:0.95rem}
+
+    /* Experience / Education entries */
+    .entry{padding:12px 0;border-top:1px dotted rgba(0,0,0,0.08);position:relative}
+    .entry:first-of-type{border-top:none;padding-top:0}
+    .entry .entry-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .entry .role{font-weight:700}
+    .entry .org{color:var(--muted);font-weight:600}
+    .entry .period{color:var(--muted);font-size:0.95rem}
+    .entry p{margin:8px 0 0 0;line-height:1.45;color:var(--text)}
+
+    /* dotted horizontal line with dot at the end (visual mimic) */
+    .dotted-line{
+      height:1px;
+      background: linear-gradient(to right, rgba(0,0,0,0.08) 33%, rgba(0,0,0,0) 34%);
+      background-size:8px 1px;
+      margin:10px 0 12px 0;
+      position:relative;
+    }
+    .dotted-line:after{
+      content: var(--dot);
+      position:absolute;
+      right:0;
+      top:-8px;
+      color:var(--muted);
+      font-size:18px;
+    }
+
+    /* Portfolio pane styles */
     .portfolio-pane{min-width:100%;display:flex;align-items:flex-start;justify-content:center;padding:26px}
     .portfolio-wrap{width:100%;max-width:1100px}
     .portfolio-gallery{display:flex;flex-direction:column;gap:22px}
     .portfolio-img{width:100%;border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.06)}
     .portfolio-img img{width:100%;height:auto;display:block}
 
-    /* small screens: stack CV above contact, portfolio below */
+    /* small screens */
     @media (max-width:900px){
       .split{flex-direction:column;padding:12px}
-      .cv-column{width:100%}
-      .contact-column{width:100%}
-      .cv-view{height:640px}
+      .left-col{width:100%}
+      .right-col{width:100%}
       .viewport{height:calc(100vh - 68px)}
       .portfolio-pane{padding:14px}
     }
 
-    /* subtle helper */
-    .note{font-size:0.9rem;color:var(--muted);margin-top:6px}
+    /* small helper */
+    .top-actions{display:flex;gap:10px;align-items:center}
+    .btn{padding:8px 12px;border-radius:8px;background:var(--blue);color:white;text-decoration:none;font-weight:700;border:none;cursor:pointer}
+    .btn.ghost{background:transparent;color:var(--blue);border:1px solid rgba(98,158,171,0.08)}
   </style>
 </head>
 <body>
@@ -135,63 +107,200 @@
 
   <div class="viewport">
     <div class="slider" id="slider">
-      <!-- Pane 1: Split view (CV left, Contact right) -->
+      <!-- Pane 1: CV structured as tiles -->
       <section class="pane">
         <div class="split">
-          <!-- CV Column (left, 65%) -->
-          <div class="cv-column" aria-label="CV column">
-            <div class="cv-top">
-              <div class="cv-title">CV — Bartosz Cieplik</div>
-              <div class="cv-actions">
-                <a class="btn" href="CV_Bartosz_Cieplik.pdf" target="_blank" rel="noopener">Download CV</a>
-                <button id="open-portfolio-cta" class="btn ghost">Open Portfolio</button>
+          <!-- Left column: main CV content tiles stacked in PDF order -->
+          <div class="left-col">
+            <!-- Top CV header tile (name & short info) -->
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div style="font-weight:800;font-size:1.25rem">Bartosz Cieplik</div>
+                  <div class="muted" style="margin-top:6px">Product Development, design process, automation & robotics</div>
+                </div>
+                <div class="top-actions">
+                  <a class="btn" href="CV_Bartosz_Cieplik.pdf" target="_blank" rel="noopener">Download CV</a>
+                  <button id="open-portfolio-cta" class="btn.ghost">Open Portfolio</button>
+                </div>
               </div>
             </div>
 
-            <div class="cv-view">
-              <div class="pdf-frame" aria-hidden="false">
-                <!-- Embedded PDF (styled as integrated frame) -->
-                <embed id="cv-embed" src="CV_Bartosz_Cieplik.pdf" type="application/pdf">
+            <!-- Experience tile (populated with entries from PDF) -->
+            <div class="card">
+              <h2>Experience</h2>
+              <div class="dotted-line"></div>
+
+              <!-- Entry 1: Research & Development Engineer -->
+              <div class="entry">
+                <div class="entry-head">
+                  <div>
+                    <div class="role">Research and Development Engineer</div>
+                    <div class="org">Lifeline Robotics | Medical Robotics | Odense, Denmark</div>
+                  </div>
+                  <div class="period">03.2024 - 11.2025</div>
+                </div>
+                <p>Medical robotics, prototyping and conceptualising, 3D printing, CAD design, product documentation, design for manufacturing, assembling, electrical design and fabrication, medical certification.</p>
+              </div>
+
+              <!-- Entry 2: Junior Mechanical and Control Engineer -->
+              <div class="entry">
+                <div class="entry-head">
+                  <div>
+                    <div class="role">Junior Mechanical and Control Engineer</div>
+                    <div class="org">MULTIPIT | Industrial Automation | Gliwice, Poland</div>
+                  </div>
+                  <div class="period">02.2023 - 01.2024</div>
+                </div>
+                <p>Industrial food production machinery, prototyping and conceptualising, 3D printing, CAD design, workshop work, pneumatics, electrical fabrication, PLC programming and IO checks, training interns.</p>
+              </div>
+
+              <!-- Entry 3: Assistant roles condensed -->
+              <div class="entry">
+                <div class="entry-head">
+                  <div>
+                    <div class="role">Assistant to Robotics Research / Engineering Departments</div>
+                    <div class="org">Institut Mihajlo Pupin | Research | Belgrade, Serbia • P.A. Nova S.A. | Technology Consulting | Gliwice, Poland</div>
+                  </div>
+                  <div class="period">07.2022 - 01.2022</div>
+                </div>
+                <p>Contributing to research in robotics for small and medium enterprises, programming simulations, analyzing kinematics concepts, CAD designing for digital twin implementation projects.</p>
+              </div>
+
+              <!-- Entry 4: earlier roles (condensed) -->
+              <div class="entry">
+                <div class="entry-head">
+                  <div>
+                    <div class="role">Assistant to Mechanical and Control Dept.</div>
+                    <div class="org">(Industrial production machines)</div>
+                  </div>
+                  <div class="period">01.2022 - 02.2023</div>
+                </div>
+                <p>Industrial food production machinery, concept development, prototyping, 3D printing, CAD design, workshop work, PLC programming and IO checks for industrial production machines.</p>
+              </div>
+
+            </div>
+
+            <!-- Education tile -->
+            <div class="card">
+              <h2>Education</h2>
+              <div class="dotted-line"></div>
+
+              <div class="entry">
+                <div class="entry-head">
+                  <div>
+                    <div class="role">MSc in Product Development and Innovation</div>
+                    <div class="org">University of Southern Denmark | Odense, Denmark</div>
+                  </div>
+                  <div class="period">2025 - 2027</div>
+                </div>
+                <p>Product development, design process, entrepreneurial and technology management.</p>
+              </div>
+
+              <div class="entry">
+                <div class="entry-head">
+                  <div>
+                    <div class="role">BSc in Automation and Robotics</div>
+                    <div class="org">Silesian University of Technology | Gliwice, Poland</div>
+                  </div>
+                  <div class="period">2019 - 2023</div>
+                </div>
+                <p>Automatization and robotization of industrial processes, control engineering, programming, CAD modelling, material selection.</p>
+              </div>
+            </div>
+
+            <!-- Extracurricular / IAESTE -->
+            <div class="card">
+              <h2>IAESTE / Extracurricular</h2>
+              <div class="dotted-line"></div>
+              <div class="entry">
+                <div class="entry-head">
+                  <div>
+                    <div class="role">IAESTE Poland — Student Organization</div>
+                    <div class="org">Student organization | Gliwice, Poland</div>
+                  </div>
+                  <div class="period">2019 - 2024</div>
+                </div>
+                <p>President of Local Committee (2022/23), Vice President (2023/24). Promoted and expanded the organization from 7 to 36 members. Coordinated promotional campaigns and workshop events, lead teams, conducted training and public speaking.</p>
+              </div>
+            </div>
+
+            <!-- Interests and Languages (left column inclusion) -->
+            <div class="card">
+              <h2>Interests & Languages</h2>
+              <div class="dotted-line"></div>
+              <div style="display:flex;gap:12px;flex-wrap:wrap">
+                <div style="min-width:160px">
+                  <div class="muted">Languages</div>
+                  <div style="margin-top:6px">English — fluent<br>Polish — native</div>
+                </div>
+                <div style="min-width:160px">
+                  <div class="muted">Interests</div>
+                  <div style="margin-top:6px">DIY, 3D printing, industrial design, robotics, photography, cooking, movies</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reference / Portfolio link tile -->
+            <div class="card">
+              <h2>Reference & Portfolio</h2>
+              <div class="dotted-line"></div>
+              <div class="entry">
+                <div class="role">Reference</div>
+                <p>Andreas Holmetoft Lyder — Lifeline Robotics | Technical Product Owner — +45 61 30 82 05</p>
+                <div style="height:10px"></div>
+                <div class="role">Portfolio / Contact links</div>
+                <p><a href="mailto:bartosz.cieplik@proton.me">bartosz.cieplik@proton.me</a><br>
+                <a href="https://www.linkedin.com/in/bartosz-cieplik-5080281a1" target="_blank">LinkedIn</a><br>
+                <a href="http://bartosz-cieplik.github.io/" target="_blank">Portfolio (site)</a></p>
               </div>
             </div>
           </div>
 
-          <!-- Contact Column (right, 35%) -->
-          <aside class="contact-column" aria-label="Contact column">
-            <div class="contact-card">
-              <h3>Contact</h3>
-              <div class="contact-item">
-                <div class="muted">LinkedIn</div>
-                <a id="link-linkedin" href="#" target="_blank">YOUR_LINKEDIN_URL</a>
-              </div>
-              <div class="contact-item">
+          <!-- Right column: contact, skills, quick links -->
+          <aside class="right-col">
+            <div class="card contact-card">
+              <h2>Contact</h2>
+              <div class="contact-list" style="margin-top:8px">
+                <div class="muted">Location</div>
+                <div style="margin:6px 0 10px 0">Odense, Denmark</div>
+
                 <div class="muted">Email</div>
-                <a id="link-email" href="mailto:youremail@example.com">youremail@example.com</a>
-              </div>
-              <div class="contact-item">
+                <a href="mailto:bartosz.cieplik@proton.me">bartosz.cieplik@proton.me</a>
+
+                <div style="height:8px"></div>
                 <div class="muted">Phone</div>
-                <a id="link-phone" href="tel:+4512345678">+45 12 34 56 78</a>
+                <a href="tel:+4571811895">+45 71 81 18 95</a>
               </div>
-              <div class="contact-item">
-                <div class="muted">Address</div>
-                <div id="link-address">Your address here</div>
-              </div>
-              <div class="note">Available ≈ 10–12 hrs/week • Based in Odense</div>
             </div>
 
-            <div class="contact-card">
-              <h3>Quick links</h3>
-              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
-                <a class="btn" href="Portfolio_Bartosz_Cieplik.pdf" download>⬇️ Download Portfolio PDF</a>
-                <a class="btn ghost" href="CV_Bartosz_Cieplik.pdf" target="_blank" rel="noopener">Open CV in new tab</a>
+            <div class="card">
+              <h2>Skills</h2>
+              <div class="dotted-line"></div>
+              <div class="skill-list" style="margin-top:8px">
+                <div class="skill-pill">CAD (Inventor, Fusion 360, SolidWorks)</div>
+                <div class="skill-pill">Prototyping & 3D printing</div>
+                <div class="skill-pill">Design for Manufacturing</div>
+                <div class="skill-pill">Electrical documentation</div>
+                <div class="skill-pill">PLC programming (Siemens)</div>
+                <div class="skill-pill">Technical writing</div>
+                <div class="skill-pill">Office 365</div>
               </div>
-              <div class="note" style="margin-top:12px">Tip: Use "Download" for highest-quality viewing.</div>
             </div>
+
+            <div class="card">
+              <h2>Quick Links</h2>
+              <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">
+                <a class="btn" href="Portfolio_Bartosz_Cieplik.pdf" download>⬇️ Download Portfolio (PDF)</a>
+                <a class="btn.ghost" href="CV_Bartosz_Cieplik.pdf" target="_blank" rel="noopener">Open CV (PDF)</a>
+              </div>
+            </div>
+
           </aside>
         </div>
       </section>
 
-      <!-- Pane 2: Portfolio (full-width, slides in from right) -->
+      <!-- Pane 2: Portfolio (full width) -->
       <section class="pane portfolio-pane">
         <div class="portfolio-wrap">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
@@ -203,7 +312,6 @@
           </div>
 
           <div id="portfolio-gallery" class="portfolio-gallery">
-            <!-- images will be injected here by JS -->
             <div id="portfolio-loading" class="muted">Loading images…</div>
           </div>
         </div>
@@ -216,19 +324,16 @@
   </footer>
 
   <script>
-    (() => {
+    (function(){
       const slider = document.getElementById('slider');
       const tabCV = document.getElementById('tab-cv');
       const tabPortfolio = document.getElementById('tab-portfolio');
-      const ctaOpenPortfolio = document.getElementById('open-portfolio-cta');
+      const openPortfolio = document.getElementById('open-portfolio-cta');
       const backToCV = document.getElementById('back-to-cv');
       const portfolioGallery = document.getElementById('portfolio-gallery');
-      const loadingNote = document.getElementById('portfolio-loading');
 
-      const transitionTime = 620; // ms - same as CSS var
-      let current = 'cv'; // 'cv' or 'portfolio'
+      let current = 'cv';
 
-      // Slide function: 0 = split view, -100% = portfolio pane
       function showPane(name){
         if(name === 'cv'){
           slider.style.transform = 'translateX(0%)';
@@ -240,96 +345,51 @@
           tabCV.classList.remove('active');
           tabPortfolio.classList.add('active');
           current = 'portfolio';
-          // ensure portfolio images are loaded once
-          if(!portfolioGallery.dataset.loaded){
-            loadPortfolioImages();
-          }
+          if(!portfolioGallery.dataset.loaded) loadPortfolioImages();
         }
       }
 
-      tabCV.addEventListener('click', () => {
-        if(current !== 'cv') showPane('cv');
-      });
-      tabPortfolio.addEventListener('click', () => {
-        if(current !== 'portfolio') showPane('portfolio');
-      });
-      ctaOpenPortfolio.addEventListener('click', () => showPane('portfolio'));
-      backToCV.addEventListener('click', () => showPane('cv'));
+      tabCV.addEventListener('click', () => { if(current !== 'cv') showPane('cv'); });
+      tabPortfolio.addEventListener('click', () => { if(current !== 'portfolio') showPane('portfolio'); });
+      openPortfolio.addEventListener('click', ()=> showPane('portfolio'));
+      backToCV.addEventListener('click', ()=> showPane('cv'));
 
-      // Smoothness helper (ensures the transition looks natural)
-      // already tuned in CSS with cubic-bezier; no extra JS needed.
-
-      // Portfolio image loader:
-      // Attempt to load images named /portfolio/1.jpg ... until we hit
-      // 3 consecutive missing files or a max limit.
+      // Load /portfolio/1.jpg, 2.jpg ... until 3 consecutive missing files (max 100)
       async function loadPortfolioImages(){
         const base = '/portfolio/';
-        const max = 100; // safety cap
+        const max = 100;
         let idx = 1;
-        let missingStreak = 0;
-        const maxMissingStreak = 3;
-        const imgs = [];
-
-        while(idx <= max && missingStreak < maxMissingStreak){
+        let missing = 0;
+        const imgs=[];
+        while(idx <= max && missing < 3){
           const url = base + idx + '.jpg';
           try{
-            // try to fetch the image HEAD to check existence
-            const res = await fetch(url, {method: 'HEAD'});
-            if(res.ok){
-              imgs.push(url);
-              missingStreak = 0;
-            } else {
-              missingStreak++;
-            }
-          } catch(e){
-            missingStreak++;
-          }
+            const res = await fetch(url, { method: 'HEAD' });
+            if(res.ok){ imgs.push(url); missing = 0; } else missing++;
+          } catch(e){ missing++; }
           idx++;
         }
-
-        // if none found, try also png
-        if(imgs.length === 0){
-          idx = 1; missingStreak = 0;
-          while(idx <= max && missingStreak < maxMissingStreak){
-            const url = base + idx + '.png';
-            try{
-              const res = await fetch(url, {method: 'HEAD'});
-              if(res.ok){ imgs.push(url); missingStreak = 0 } else missingStreak++;
-            } catch(e){ missingStreak++ }
-            idx++;
-          }
-        }
-
-        // populate gallery
-        portfolioGallery.innerHTML = '';
         if(imgs.length === 0){
           portfolioGallery.innerHTML = '<div class="muted">No portfolio images found in <code>/portfolio/</code>. Please upload files named <code>1.jpg, 2.jpg, ...</code>.</div>';
           portfolioGallery.dataset.loaded = 'true';
           return;
         }
-
-        imgs.forEach((src, i) => {
-          const card = document.createElement('div');
-          card.className = 'portfolio-img';
-          const img = document.createElement('img');
-          img.loading = 'lazy';
-          img.src = src;
-          img.alt = `Portfolio page ${i+1}`;
-          card.appendChild(img);
-          portfolioGallery.appendChild(card);
+        portfolioGallery.innerHTML = '';
+        imgs.forEach((src,i)=>{
+          const wrap = document.createElement('div'); wrap.className='portfolio-img';
+          const img = document.createElement('img'); img.loading='lazy'; img.src=src; img.alt='Portfolio page '+(i+1);
+          wrap.appendChild(img); portfolioGallery.appendChild(wrap);
         });
-
-        portfolioGallery.dataset.loaded = 'true';
+        portfolioGallery.dataset.loaded='true';
       }
 
-      // accessibility: let left/right arrow switch
-      window.addEventListener('keydown', (e) => {
-        if(e.key === 'ArrowRight' && current === 'cv') showPane('portfolio');
-        if(e.key === 'ArrowLeft' && current === 'portfolio') showPane('cv');
-      });
-
-      // initial state: CV visible
+      // init
       showPane('cv');
+      // keyboard nav
+      window.addEventListener('keydown', (e)=>{
+        if(e.key==='ArrowRight' && current==='cv') showPane('portfolio');
+        if(e.key==='ArrowLeft' && current==='portfolio') showPane('cv');
+      });
     })();
   </script>
 </body>
