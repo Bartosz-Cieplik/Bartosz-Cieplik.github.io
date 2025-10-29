@@ -1,173 +1,336 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bartosz Cieplik – Portfolio & CV</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bartosz Cieplik — CV & Portfolio</title>
+
+  <!-- If you have Bricolage Grotesque available from a provider, replace this URL.
+       A fallback stack is included. -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root {
-      --green: #79ab62;
-      --blue: #629eab;
-      --light: #eaeaea;
-      --dark: #222;
+    :root{
+      --green:#79ab62;
+      --blue:#629eab;
+      --light:#eaeaea;
+      --bg:#fbfcfb;
+      --text:#222;
+      --muted:#666;
+      --transition: 620ms cubic-bezier(.22,.98,.38,.98); /* smooth, iOS-ish */
+      --max-portfolio-imgs: 100;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family: "Bricolage Grotesque", Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale}
+    /* Top ribbon */
+    header{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:white;border-bottom:1px solid rgba(0,0,0,0.04);position:sticky;top:0;z-index:30}
+    .brand{font-weight:700;font-size:1.25rem;color:var(--text)}
+    .tabs{display:flex;gap:12px}
+    .tab{
+      padding:10px 18px;border-radius:10px;font-weight:700;color:var(--blue);background:transparent;border:2px solid transparent;cursor:pointer;font-size:1rem;
+      transition: color .25s, transform .18s, background .25s;
+    }
+    .tab:hover{transform:translateY(-2px)}
+    .tab.active{color:var(--green); background:rgba(121,171,98,0.06); border-color: rgba(98,158,171,0.06)}
+    /* Outer viewport for slider */
+    .viewport{position:relative;overflow:hidden;height:calc(100vh - 68px);} /* header height considered */
+    .slider{display:flex;height:100%;transition: transform var(--transition);will-change:transform}
+    /* left split (CV + contact) */
+    .pane{
+      min-width:100%;
+      height:100%;
+      display:flex;
+      align-items:stretch;
+      justify-content:flex-start;
+      background:var(--bg);
+    }
+    .split{
+      display:flex;
+      width:100%;
+      height:100%;
+      gap:20px;
+      align-items:stretch;
+      padding:26px;
+    }
+    /* CV area on the left - 65% */
+    .cv-column{
+      width:65%;
+      min-width:320px;
+      max-width:1200px;
+      background:white;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.06);display:flex;flex-direction:column;
+    }
+    .cv-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.04)}
+    .cv-title{font-weight:700;color:var(--text)}
+    .cv-actions{display:flex;gap:10px}
+    .btn{padding:8px 12px;border-radius:8px;background:var(--blue);color:white;text-decoration:none;font-weight:700;border:none;cursor:pointer}
+    .btn.ghost{background:transparent;color:var(--blue);border:1px solid rgba(98,158,171,0.08)}
+    /* The CV viewer - make it feel integrated, not like a raw browser chrome */
+    .cv-view{
+      flex:1;
+      height:calc(100% - 56px);
+      background:linear-gradient(180deg,#fff,#fbfcfc);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px;
+    }
+    /* embed container - gives subtle "card" look */
+    .pdf-frame{
+      width:100%;
+      height:100%;
+      border-radius:8px;
+      overflow:hidden;
+      box-shadow:inset 0 0 0 1px rgba(0,0,0,0.02);
+      background: #fff;
+    }
+    .pdf-frame embed{width:100%;height:100%;border:0;display:block}
+
+    /* contact column on the right - 35% */
+    .contact-column{
+      width:35%;
+      min-width:220px;
+      max-width:520px;
+      display:flex;flex-direction:column;gap:12px;
+      align-items:stretch;
+    }
+    .contact-card{
+      width:100%;
+      background:white;border-radius:12px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,0.04);
+    }
+    .contact-card h3{margin:0 0 8px 0;color:var(--text)}
+    .contact-item{display:flex;flex-direction:column;padding:8px 0;border-top:1px dashed rgba(0,0,0,0.03)}
+    .contact-item:first-of-type{border-top:0;padding-top:0}
+    .contact-item a{color:var(--blue);text-decoration:none;font-weight:600}
+    .muted{color:var(--muted);font-size:0.95rem}
+
+    /* Portfolio pane (full-width) */
+    .portfolio-pane{min-width:100%;display:flex;align-items:flex-start;justify-content:center;padding:26px}
+    .portfolio-wrap{width:100%;max-width:1100px}
+    .portfolio-gallery{display:flex;flex-direction:column;gap:22px}
+    .portfolio-img{width:100%;border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.06)}
+    .portfolio-img img{width:100%;height:auto;display:block}
+
+    /* small screens: stack CV above contact, portfolio below */
+    @media (max-width:900px){
+      .split{flex-direction:column;padding:12px}
+      .cv-column{width:100%}
+      .contact-column{width:100%}
+      .cv-view{height:640px}
+      .viewport{height:calc(100vh - 68px)}
+      .portfolio-pane{padding:14px}
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Bricolage Grotesque', system-ui, sans-serif;
-      margin: 0;
-      background: var(--light);
-      color: var(--dark);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    header {
-      background: white;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      flex-wrap: wrap;
-    }
-
-    header h1 {
-      font-size: 1.5rem;
-      margin: 0;
-      color: var(--dark);
-    }
-
-    nav {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    nav button {
-      background: none;
-      border: none;
-      font-weight: 600;
-      color: var(--blue);
-      font-size: 1rem;
-      cursor: pointer;
-      transition: color 0.2s, border-bottom 0.2s;
-      border-bottom: 2px solid transparent;
-    }
-
-    nav button:hover,
-    nav button.active {
-      color: var(--green);
-      border-bottom: 2px solid var(--green);
-    }
-
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1.5rem;
-      background: var(--light);
-    }
-
-    embed {
-      width: 100%;
-      height: 85vh;
-      border: none;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .contact {
-      display: none;
-      text-align: center;
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      max-width: 500px;
-      margin-top: 2rem;
-    }
-
-    .contact a {
-      display: block;
-      color: var(--blue);
-      text-decoration: none;
-      font-weight: 500;
-      margin: 0.4rem 0;
-      transition: color 0.2s;
-    }
-
-    .contact a:hover {
-      color: var(--green);
-    }
-
-    footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.85rem;
-      color: #666;
-    }
-
-    @media (max-width: 768px) {
-      embed {
-        height: 70vh;
-      }
-    }
+    /* subtle helper */
+    .note{font-size:0.9rem;color:var(--muted);margin-top:6px}
   </style>
 </head>
 <body>
   <header>
-    <h1>Bartosz Cieplik</h1>
-    <nav>
-      <button class="tab-btn active" data-target="cv">CV</button>
-      <button class="tab-btn" data-target="portfolio">Portfolio</button>
-      <button class="tab-btn" data-target="contact">Contact</button>
-    </nav>
+    <div class="brand">Bartosz Cieplik</div>
+    <div class="tabs">
+      <button id="tab-cv" class="tab active" data-target="cv">CV</button>
+      <button id="tab-portfolio" class="tab" data-target="portfolio">Portfolio</button>
+    </div>
   </header>
 
-  <main>
-    <!-- CV shown by default -->
-    <embed id="cv" src="CV_Bartosz_Cieplik.pdf" type="application/pdf">
-    <embed id="portfolio" src="Portfolio_Bartosz_Cieplik.pdf" type="application/pdf" style="display:none;">
-    <div id="contact" class="contact">
-      <h2>Contact</h2>
-      <p>Feel free to reach out:</p>
-      <a href="https://www.linkedin.com/in/bartosz-cieplik-5080281a1" target="_blank">LinkedIn</a>
-      <a href="mailto:bartosz.cieplik@proton.me">Email: YOUR_EMAIL</a>
-      <a href="tel:+45 12 34 56 78">Phone: YOUR_PHONE</a>
-      <p>Address: Odense, Denmark</p>
-    </div>
-  </main>
+  <div class="viewport">
+    <div class="slider" id="slider">
+      <!-- Pane 1: Split view (CV left, Contact right) -->
+      <section class="pane">
+        <div class="split">
+          <!-- CV Column (left, 65%) -->
+          <div class="cv-column" aria-label="CV column">
+            <div class="cv-top">
+              <div class="cv-title">CV — Bartosz Cieplik</div>
+              <div class="cv-actions">
+                <a class="btn" href="CV_Bartosz_Cieplik.pdf" target="_blank" rel="noopener">Download CV</a>
+                <button id="open-portfolio-cta" class="btn ghost">Open Portfolio</button>
+              </div>
+            </div>
 
-  <footer>
-    © 2025 Bartosz Cieplik – Portfolio & CV
+            <div class="cv-view">
+              <div class="pdf-frame" aria-hidden="false">
+                <!-- Embedded PDF (styled as integrated frame) -->
+                <embed id="cv-embed" src="CV_Bartosz_Cieplik.pdf" type="application/pdf">
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Column (right, 35%) -->
+          <aside class="contact-column" aria-label="Contact column">
+            <div class="contact-card">
+              <h3>Contact</h3>
+              <div class="contact-item">
+                <div class="muted">LinkedIn</div>
+                <a id="link-linkedin" href="#" target="_blank">YOUR_LINKEDIN_URL</a>
+              </div>
+              <div class="contact-item">
+                <div class="muted">Email</div>
+                <a id="link-email" href="mailto:youremail@example.com">youremail@example.com</a>
+              </div>
+              <div class="contact-item">
+                <div class="muted">Phone</div>
+                <a id="link-phone" href="tel:+4512345678">+45 12 34 56 78</a>
+              </div>
+              <div class="contact-item">
+                <div class="muted">Address</div>
+                <div id="link-address">Your address here</div>
+              </div>
+              <div class="note">Available ≈ 10–12 hrs/week • Based in Odense</div>
+            </div>
+
+            <div class="contact-card">
+              <h3>Quick links</h3>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+                <a class="btn" href="Portfolio_Bartosz_Cieplik.pdf" download>⬇️ Download Portfolio PDF</a>
+                <a class="btn ghost" href="CV_Bartosz_Cieplik.pdf" target="_blank" rel="noopener">Open CV in new tab</a>
+              </div>
+              <div class="note" style="margin-top:12px">Tip: Use "Download" for highest-quality viewing.</div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Pane 2: Portfolio (full-width, slides in from right) -->
+      <section class="pane portfolio-pane">
+        <div class="portfolio-wrap">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div style="font-weight:700;font-size:1.05rem">Portfolio — Selected Work</div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <button id="back-to-cv" class="tab">Back</button>
+              <a class="btn" href="Portfolio_Bartosz_Cieplik.pdf" download>⬇️ Download Portfolio (PDF)</a>
+            </div>
+          </div>
+
+          <div id="portfolio-gallery" class="portfolio-gallery">
+            <!-- images will be injected here by JS -->
+            <div id="portfolio-loading" class="muted">Loading images…</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <footer style="padding:12px 20px;text-align:center;color:var(--muted);font-size:0.9rem">
+    © 2025 Bartosz Cieplik
   </footer>
 
   <script>
-    const buttons = document.querySelectorAll(".tab-btn");
-    const cv = document.getElementById("cv");
-    const portfolio = document.getElementById("portfolio");
-    const contact = document.getElementById("contact");
+    (() => {
+      const slider = document.getElementById('slider');
+      const tabCV = document.getElementById('tab-cv');
+      const tabPortfolio = document.getElementById('tab-portfolio');
+      const ctaOpenPortfolio = document.getElementById('open-portfolio-cta');
+      const backToCV = document.getElementById('back-to-cv');
+      const portfolioGallery = document.getElementById('portfolio-gallery');
+      const loadingNote = document.getElementById('portfolio-loading');
 
-    buttons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        buttons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
+      const transitionTime = 620; // ms - same as CSS var
+      let current = 'cv'; // 'cv' or 'portfolio'
 
-        cv.style.display = "none";
-        portfolio.style.display = "none";
-        contact.style.display = "none";
+      // Slide function: 0 = split view, -100% = portfolio pane
+      function showPane(name){
+        if(name === 'cv'){
+          slider.style.transform = 'translateX(0%)';
+          tabCV.classList.add('active');
+          tabPortfolio.classList.remove('active');
+          current = 'cv';
+        } else {
+          slider.style.transform = 'translateX(-100%)';
+          tabCV.classList.remove('active');
+          tabPortfolio.classList.add('active');
+          current = 'portfolio';
+          // ensure portfolio images are loaded once
+          if(!portfolioGallery.dataset.loaded){
+            loadPortfolioImages();
+          }
+        }
+      }
 
-        const target = btn.dataset.target;
-        document.getElementById(target).style.display = target === "contact" ? "block" : "block";
+      tabCV.addEventListener('click', () => {
+        if(current !== 'cv') showPane('cv');
       });
-    });
+      tabPortfolio.addEventListener('click', () => {
+        if(current !== 'portfolio') showPane('portfolio');
+      });
+      ctaOpenPortfolio.addEventListener('click', () => showPane('portfolio'));
+      backToCV.addEventListener('click', () => showPane('cv'));
+
+      // Smoothness helper (ensures the transition looks natural)
+      // already tuned in CSS with cubic-bezier; no extra JS needed.
+
+      // Portfolio image loader:
+      // Attempt to load images named /portfolio/1.jpg ... until we hit
+      // 3 consecutive missing files or a max limit.
+      async function loadPortfolioImages(){
+        const base = '/portfolio/';
+        const max = 100; // safety cap
+        let idx = 1;
+        let missingStreak = 0;
+        const maxMissingStreak = 3;
+        const imgs = [];
+
+        while(idx <= max && missingStreak < maxMissingStreak){
+          const url = base + idx + '.jpg';
+          try{
+            // try to fetch the image HEAD to check existence
+            const res = await fetch(url, {method: 'HEAD'});
+            if(res.ok){
+              imgs.push(url);
+              missingStreak = 0;
+            } else {
+              missingStreak++;
+            }
+          } catch(e){
+            missingStreak++;
+          }
+          idx++;
+        }
+
+        // if none found, try also png
+        if(imgs.length === 0){
+          idx = 1; missingStreak = 0;
+          while(idx <= max && missingStreak < maxMissingStreak){
+            const url = base + idx + '.png';
+            try{
+              const res = await fetch(url, {method: 'HEAD'});
+              if(res.ok){ imgs.push(url); missingStreak = 0 } else missingStreak++;
+            } catch(e){ missingStreak++ }
+            idx++;
+          }
+        }
+
+        // populate gallery
+        portfolioGallery.innerHTML = '';
+        if(imgs.length === 0){
+          portfolioGallery.innerHTML = '<div class="muted">No portfolio images found in <code>/portfolio/</code>. Please upload files named <code>1.jpg, 2.jpg, ...</code>.</div>';
+          portfolioGallery.dataset.loaded = 'true';
+          return;
+        }
+
+        imgs.forEach((src, i) => {
+          const card = document.createElement('div');
+          card.className = 'portfolio-img';
+          const img = document.createElement('img');
+          img.loading = 'lazy';
+          img.src = src;
+          img.alt = `Portfolio page ${i+1}`;
+          card.appendChild(img);
+          portfolioGallery.appendChild(card);
+        });
+
+        portfolioGallery.dataset.loaded = 'true';
+      }
+
+      // accessibility: let left/right arrow switch
+      window.addEventListener('keydown', (e) => {
+        if(e.key === 'ArrowRight' && current === 'cv') showPane('portfolio');
+        if(e.key === 'ArrowLeft' && current === 'portfolio') showPane('cv');
+      });
+
+      // initial state: CV visible
+      showPane('cv');
+    })();
   </script>
 </body>
 </html>
